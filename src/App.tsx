@@ -314,7 +314,7 @@ const ChatBot: React.FC = () => {
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !apiKey) return;
-    const userMsg = { role: 'user', text: input };
+    const userMsg = { role: 'user' as const, text: input };
     setMessages((msgs) => [...msgs, userMsg]);
     setInput('');
     setLoading(true);
@@ -328,9 +328,9 @@ const ChatBot: React.FC = () => {
       });
       const data = await res.json();
       const botText = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Bir hata oluştu.';
-      setMessages((msgs) => [...msgs, { role: 'bot', text: botText }]);
+      setMessages((msgs) => [...msgs, { role: 'bot' as const, text: botText }]);
     } catch (err) {
-      setMessages((msgs) => [...msgs, { role: 'bot', text: 'Bir hata oluştu.' }]);
+      setMessages((msgs) => [...msgs, { role: 'bot' as const, text: 'Bir hata oluştu.' }]);
     }
     setLoading(false);
   };
