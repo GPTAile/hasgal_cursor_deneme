@@ -13,6 +13,9 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
 
+    /* JSX support */
+    "jsx": "react-jsx",
+
     /* Emit */
     "noEmit": true,
 
