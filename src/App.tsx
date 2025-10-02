@@ -309,37 +309,66 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  // API anahtarı veya fonksiyon yoksa false olacak şekilde simüle
+  const apiKey = false; // import.meta.env.VITE_GEMINI_API_KEY;
+  const apiAvailable = !!apiKey;
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !apiKey) return;
+    if (!input.trim() || !apiAvailable) return;
     const userMsg = { role: 'user' as const, text: input };
     setMessages((msgs) => [...msgs, userMsg]);
     setInput('');
     setLoading(true);
     try {
-      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: userMsg.text }] }],
-        }),
-      });
-      const data = await res.json();
-      const botText = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Bir hata oluştu.';
-      setMessages((msgs) => [...msgs, { role: 'bot' as const, text: botText }]);
+      // API'ye istek atılmayacak
+      setTimeout(() => {
+        setMessages((msgs) => [...msgs, { role: 'bot' as const, text: 'ChatBot şu anda aktif değil.' }]);
+        setLoading(false);
+      }, 700);
     } catch (err) {
       setMessages((msgs) => [...msgs, { role: 'bot' as const, text: 'Bir hata oluştu.' }]);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  if (!apiKey) {
-    return <div className="box" style={{ margin: '2rem auto', maxWidth: 400, color: '#a00' }}>
-      <b>API anahtarı bulunamadı.</b><br />
-      Lütfen proje köküne <code>.env</code> dosyası ekleyin ve <br />
-      <code>VITE_GEMINI_API_KEY=buraya_anahtarınızı_yazın</code> satırını girin.
+  if (!apiAvailable) {
+    return <div className="box" style={{ margin: '2rem auto', maxWidth: 500 }}>
+      <h2>ChatBot (Gemini)</h2>
+      <div style={{ minHeight: 220, maxHeight: 320, overflowY: 'auto', background: '#f9fafb', borderRadius: 8, padding: 12, marginBottom: 16, boxShadow: '0 1px 4px #0001' }}>
+        {messages.length === 0 && <div style={{ color: '#888' }}>Sorunuzu yazın ve gönderin.</div>}
+        {messages.map((msg, i) => (
+          <div key={i} style={{
+            textAlign: msg.role === 'user' ? 'right' : 'left',
+            margin: '8px 0',
+          }}>
+            <span style={{
+              display: 'inline-block',
+              background: msg.role === 'user' ? '#3b82f6' : '#e5e7eb',
+              color: msg.role === 'user' ? '#fff' : '#222',
+              borderRadius: 12,
+              padding: '8px 14px',
+              maxWidth: 320,
+              fontSize: 15,
+              boxShadow: msg.role === 'user' ? '0 2px 8px #3b82f633' : '0 1px 4px #0001',
+            }}>{msg.text}</span>
+          </div>
+        ))}
+        {loading && <div style={{ color: '#888', fontStyle: 'italic' }}>Yanıt bekleniyor...</div>}
+      </div>
+      <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="Sorunuzu yazın..."
+          style={{ flex: 1 }}
+          disabled={loading || !apiAvailable}
+        />
+        <button className="btn" type="submit" disabled={loading || !input.trim() || !apiAvailable}>Gönder</button>
+      </form>
+      <div style={{ color: '#a00', marginTop: 16, fontWeight: 500 }}>
+        ChatBot şu anda aktif değil. API anahtarı veya sunucu fonksiyonu eklenmediği için cevap veremiyor.
+      </div>
     </div>;
   }
 
@@ -373,9 +402,9 @@ const ChatBot: React.FC = () => {
           onChange={e => setInput(e.target.value)}
           placeholder="Sorunuzu yazın..."
           style={{ flex: 1 }}
-          disabled={loading}
+          disabled={loading || !apiAvailable}
         />
-        <button className="btn" type="submit" disabled={loading || !input.trim()}>Gönder</button>
+        <button className="btn" type="submit" disabled={loading || !input.trim() || !apiAvailable}>Gönder</button>
       </form>
     </div>
   );
