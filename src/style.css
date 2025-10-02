@@ -1,0 +1,219 @@
+/* Modern ve profesyonel arayüz için güncellenmiş stiller */
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --bg: #f4f6fa;
+  --card-bg: #fff;
+  --text: #222;
+  --shadow: 0 4px 24px #0002;
+  --radius: 16px;
+  --star: #ffd700;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  min-height: 100vh;
+}
+#app {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.5rem 2rem;
+  box-shadow: 0 2px 12px #0001;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.navbar-logo img {
+  height: 40px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px #0002;
+}
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.navbar-links {
+  display: flex;
+  gap: 1.2rem;
+}
+.navbar-link {
+  color: #fff;
+  font-weight: 500;
+  font-size: 1.1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3em 0.7em;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.navbar-link.active, .navbar-link:hover {
+  background: var(--primary-dark);
+}
+
+/* Kartlar */
+.flashcard-container {
+  perspective: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.flashcard {
+  width: 340px;
+  min-height: 200px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: box-shadow 0.3s, transform 0.3s;
+  position: relative;
+  transform-style: preserve-3d;
+}
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+.flashcard-front, .flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: var(--card-bg);
+}
+.flashcard-star {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  font-size: 2.2rem;
+  color: var(--star);
+  filter: drop-shadow(0 0 8px #ffd70088);
+  animation: star-pop 0.7s cubic-bezier(.5,1.8,.5,1.1);
+}
+@keyframes star-pop {
+  0% { transform: scale(0.2) rotate(-30deg); opacity: 0; }
+  60% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Butonlar */
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0.3em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0001;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn:hover, .btn:focus {
+  background: var(--primary-dark);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Kart geçiş animasyonu */
+@keyframes card-in {
+  0% { opacity: 0; transform: scale(0.95) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.flashcard, .quiz-card {
+  animation: card-in 0.5s;
+}
+
+/* Quiz butonları */
+.quiz-option {
+  background: #f3f6ff;
+  color: var(--text);
+  border: 1.5px solid #dbeafe;
+  border-radius: 8px;
+  padding: 0.7em 1em;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.quiz-option.correct {
+  background: #e6ffed;
+  border-color: #34d399;
+  color: #059669;
+  box-shadow: 0 0 12px #34d39944;
+}
+.quiz-option.wrong {
+  background: #ffe6e6;
+  border-color: #f87171;
+  color: #b91c1c;
+  box-shadow: 0 0 12px #f8717144;
+}
+
+/* Kutular ve formlar */
+.box {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+input, textarea {
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.7em 1em;
+  font-size: 1rem;
+  margin-bottom: 0.5em;
+  outline: none;
+  transition: border 0.2s;
+}
+input:focus, textarea:focus {
+  border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .flashcard, .box {
+    width: 98vw;
+    min-width: unset;
+    padding: 1rem;
+  }
+  .navbar {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.7rem 0.5rem;
+  }
+}
