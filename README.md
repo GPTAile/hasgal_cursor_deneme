@@ -1,0 +1,1 @@
+# hasgal_cursor_deneme
