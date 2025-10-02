@@ -305,7 +305,8 @@ const Stats: React.FC = () => {
   );
 };
 
-const ChatBot: React.FC = () => {
+const ChatBotWidget: React.FC = () => {
+  const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -321,9 +322,8 @@ const ChatBot: React.FC = () => {
     setInput('');
     setLoading(true);
     try {
-      // API'ye istek atılmayacak
       setTimeout(() => {
-        setMessages((msgs) => [...msgs, { role: 'bot' as const, text: 'ChatBot şu anda aktif değil.' }]);
+        setMessages((msgs) => [...msgs, { role: 'bot' as const, text: '🤖 ChatBot şu anda aktif değil.' }]);
         setLoading(false);
       }, 700);
     } catch (err) {
@@ -332,86 +332,93 @@ const ChatBot: React.FC = () => {
     }
   };
 
-  if (!apiAvailable) {
-    return <div className="box" style={{ margin: '2rem auto', maxWidth: 500 }}>
-      <h2>ChatBot (Gemini)</h2>
-      <div style={{ minHeight: 220, maxHeight: 320, overflowY: 'auto', background: '#f9fafb', borderRadius: 8, padding: 12, marginBottom: 16, boxShadow: '0 1px 4px #0001' }}>
-        {messages.length === 0 && <div style={{ color: '#888' }}>Sorunuzu yazın ve gönderin.</div>}
-        {messages.map((msg, i) => (
-          <div key={i} style={{
-            textAlign: msg.role === 'user' ? 'right' : 'left',
-            margin: '8px 0',
-          }}>
-            <span style={{
-              display: 'inline-block',
-              background: msg.role === 'user' ? '#3b82f6' : '#e5e7eb',
-              color: msg.role === 'user' ? '#fff' : '#222',
-              borderRadius: 12,
-              padding: '8px 14px',
-              maxWidth: 320,
-              fontSize: 15,
-              boxShadow: msg.role === 'user' ? '0 2px 8px #3b82f633' : '0 1px 4px #0001',
-            }}>{msg.text}</span>
-          </div>
-        ))}
-        {loading && <div style={{ color: '#888', fontStyle: 'italic' }}>Yanıt bekleniyor...</div>}
-      </div>
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Sorunuzu yazın..."
-          style={{ flex: 1 }}
-          disabled={loading || !apiAvailable}
-        />
-        <button className="btn" type="submit" disabled={loading || !input.trim() || !apiAvailable}>Gönder</button>
-      </form>
-      <div style={{ color: '#a00', marginTop: 16, fontWeight: 500 }}>
-        ChatBot şu anda aktif değil. API anahtarı veya sunucu fonksiyonu eklenmediği için cevap veremiyor.
-      </div>
-    </div>;
-  }
-
   return (
-    <div className="box" style={{ margin: '2rem auto', maxWidth: 500 }}>
-      <h2>ChatBot (Gemini)</h2>
-      <div style={{ minHeight: 220, maxHeight: 320, overflowY: 'auto', background: '#f9fafb', borderRadius: 8, padding: 12, marginBottom: 16, boxShadow: '0 1px 4px #0001' }}>
-        {messages.length === 0 && <div style={{ color: '#888' }}>Sorunuzu yazın ve gönderin.</div>}
-        {messages.map((msg, i) => (
-          <div key={i} style={{
-            textAlign: msg.role === 'user' ? 'right' : 'left',
-            margin: '8px 0',
-          }}>
-            <span style={{
-              display: 'inline-block',
-              background: msg.role === 'user' ? '#3b82f6' : '#e5e7eb',
-              color: msg.role === 'user' ? '#fff' : '#222',
-              borderRadius: 12,
-              padding: '8px 14px',
-              maxWidth: 320,
-              fontSize: 15,
-              boxShadow: msg.role === 'user' ? '0 2px 8px #3b82f633' : '0 1px 4px #0001',
-            }}>{msg.text}</span>
+    <>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          position: 'fixed',
+          bottom: open ? 340 : 32,
+          right: 32,
+          zIndex: 1000,
+          width: 60,
+          height: 60,
+          borderRadius: '50%',
+          background: '#3b82f6',
+          color: '#fff',
+          fontSize: 32,
+          boxShadow: '0 4px 16px #0002',
+          border: 'none',
+          cursor: 'pointer',
+          transition: 'bottom 0.3s',
+        }}
+        aria-label={open ? 'ChatBotu Kapat' : 'ChatBotu Aç'}
+      >
+        {open ? '❌' : '💬'}
+      </button>
+      {open && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 32,
+            right: 32,
+            zIndex: 1000,
+            width: 340,
+            maxWidth: '95vw',
+            background: '#fff',
+            borderRadius: 18,
+            boxShadow: '0 8px 32px #0003',
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            animation: 'card-in 0.4s',
+          }}
+        >
+          <div style={{ background: '#3b82f6', color: '#fff', padding: '0.8em 1.2em', fontWeight: 600, fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span role="img" aria-label="robot">🤖</span> ChatBot
+            <span style={{ marginLeft: 'auto', fontSize: 18 }}>✨</span>
           </div>
-        ))}
-        {loading && <div style={{ color: '#888', fontStyle: 'italic' }}>Yanıt bekleniyor...</div>}
-      </div>
-      <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Sorunuzu yazın..."
-          style={{ flex: 1 }}
-          disabled={loading || !apiAvailable}
-        />
-        <button className="btn" type="submit" disabled={loading || !input.trim() || !apiAvailable}>Gönder</button>
-      </form>
-    </div>
+          <div style={{ minHeight: 180, maxHeight: 260, overflowY: 'auto', background: '#f9fafb', padding: 12 }}>
+            {messages.length === 0 && <div style={{ color: '#888', textAlign: 'center' }}>Sorunuzu yazın ve gönderin! <span role="img" aria-label="el">👇</span></div>}
+            {messages.map((msg, i) => (
+              <div key={i} style={{
+                textAlign: msg.role === 'user' ? 'right' : 'left',
+                margin: '8px 0',
+              }}>
+                <span style={{
+                  display: 'inline-block',
+                  background: msg.role === 'user' ? '#3b82f6' : '#e5e7eb',
+                  color: msg.role === 'user' ? '#fff' : '#222',
+                  borderRadius: 12,
+                  padding: '8px 14px',
+                  maxWidth: 220,
+                  fontSize: 15,
+                  boxShadow: msg.role === 'user' ? '0 2px 8px #3b82f633' : '0 1px 4px #0001',
+                }}>{msg.role === 'user' ? '🧑 ' : '🤖 '}{msg.text}</span>
+              </div>
+            ))}
+            {loading && <div style={{ color: '#888', fontStyle: 'italic', textAlign: 'center' }}>Yanıt bekleniyor...</div>}
+          </div>
+          <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8, padding: 12, borderTop: '1px solid #eee', background: '#f9fafb' }}>
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Sorunuzu yazın..."
+              style={{ flex: 1, borderRadius: 8, border: '1.5px solid #d1d5db', padding: '0.7em 1em', fontSize: 15 }}
+              disabled={loading || !apiAvailable}
+            />
+            <button className="btn" type="submit" disabled={loading || !input.trim() || !apiAvailable} style={{ fontSize: 18, padding: '0.7em 1.1em' }}>🚀</button>
+          </form>
+          {!apiAvailable && <div style={{ color: '#a00', fontWeight: 500, fontSize: 14, textAlign: 'center', padding: 8 }}>ChatBot şu anda aktif değil.</div>}
+        </div>
+      )}
+    </>
   );
 };
 
 const App: React.FC = () => {
-  const [page, setPage] = useState<'flashcard' | 'quiz' | 'words' | 'stats' | 'chat'>('flashcard');
+  const [page, setPage] = useState<'flashcard' | 'quiz' | 'words' | 'stats'>('flashcard');
 
   return (
     <div>
@@ -421,8 +428,8 @@ const App: React.FC = () => {
         {page === 'quiz' && <Quiz />}
         {page === 'words' && <UserWords />}
         {page === 'stats' && <Stats />}
-        {page === 'chat' && <ChatBot />}
       </div>
+      <ChatBotWidget />
     </div>
   );
 };
